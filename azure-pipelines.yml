@@ -10,6 +10,7 @@ pool:
 
 variables:
 - group: devopsforai-aml-vg
+- group: kf-variables
 
 stages:
 - stage: ContainerConfig
