@@ -55,8 +55,6 @@ stages:
 - stage: KubeflowTrigger
   dependsOn: ContainerConfig
   displayName: 'Trigger Kubeflow Pipeline'
-  variables:
-  - group: kf-variables
   jobs:
   - job: Kubeflow
     pool:
