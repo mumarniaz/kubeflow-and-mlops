@@ -22,11 +22,11 @@ stages:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
         inlineScript: '
-          sudo az acr login -n agentsFWtest && 
+          sudo az acr login -n $(ACR_NAME) -u $(ACR_USER_NAME) -p $(ACR_PASSWORD) && 
           cd code &&
           cd preprocess &&
-          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION . &&
-          sudo docker push agentsfwtest.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION '
+          sudo docker build -t $(ACR_SERVER)/kubeflow/preprocess:$BUILD_SOURCEVERSION . &&
+          sudo docker push $(ACR_SERVER)/kubeflow/preprocess:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Preprocess Image'
 
     - task: AzureCLI@1
@@ -36,8 +36,8 @@ stages:
         inlineScript: '
           cd code &&
           cd training &&
-          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION . &&
-          sudo docker push agentsfwtest.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION '
+          sudo docker build -t $(ACR_SERVER)/kubeflow/training:$BUILD_SOURCEVERSION . &&
+          sudo docker push $(ACR_SERVER)/kubeflow/training:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Training Image'
 
     - task: AzureCLI@1
@@ -47,8 +47,8 @@ stages:
         inlineScript: '
           cd code &&
           cd register &&
-          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION . &&
-          sudo docker push agentsfwtest.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION '
+          sudo docker build -t $(ACR_SERVER)/kubeflow/register:$BUILD_SOURCEVERSION . &&
+          sudo docker push $(ACR_SERVER)/kubeflow/register:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Register Image'
 
 
