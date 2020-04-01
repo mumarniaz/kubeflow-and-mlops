@@ -5,6 +5,9 @@ trigger:
 
 pr: none
 
+variables:
+- group: devopsforai-aml-vg
+
 stages:
 - stage: ContainerConfig
   displayName: 'Configure and Register Containers'
@@ -15,36 +18,36 @@ stages:
     steps:
     - task: AzureCLI@1
       inputs:
-        azureSubscription: 'Shared Data Platform - R+D (1308a130-d549-44e1-ba66-ce8c487d76e3)'
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
         inlineScript: '
-          sudo az acr login -n kfamlacr && 
+          sudo az acr login -n agentsFWtest && 
           cd code &&
           cd preprocess &&
-          sudo docker build -t kfamlacr.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION . &&
-          sudo docker push kfamlacr.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION '
+          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION . &&
+          sudo docker push agentsfwtest.azurecr.io/kubeflow/preprocess:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Preprocess Image'
 
     - task: AzureCLI@1
       inputs:
-        azureSubscription: 'Shared Data Platform - R+D (1308a130-d549-44e1-ba66-ce8c487d76e3)'
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
         inlineScript: '
           cd code &&
           cd training &&
-          sudo docker build -t kfamlacr.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION . &&
-          sudo docker push kfamlacr.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION '
+          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION . &&
+          sudo docker push agentsfwtest.azurecr.io/kubeflow/training:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Training Image'
 
     - task: AzureCLI@1
       inputs:
-        azureSubscription: 'Shared Data Platform - R+D (1308a130-d549-44e1-ba66-ce8c487d76e3)'
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
         inlineScript: '
           cd code &&
           cd register &&
-          sudo docker build -t kfamlacr.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION . &&
-          sudo docker push kfamlacr.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION '
+          sudo docker build -t agentsfwtest.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION . &&
+          sudo docker push agentsfwtest.azurecr.io/kubeflow/register:$BUILD_SOURCEVERSION '
         displayName: 'Build & Push Register Image'
 
 
@@ -63,10 +66,10 @@ stages:
       env:
         KF_MAPPED_SERVICE_PRINCIPAL_PASSWORD: $(KF_SERVICE_PRINCIPAL_PASSWORD)
       inputs:
-        azureSubscription: 'Shared Data Platform - R+D (1308a130-d549-44e1-ba66-ce8c487d76e3)'
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
         inlineScript: |
-          az aks get-credentials -g kubeflow-mlops-rg -n kubeflow-mlops-cluster
+          az aks get-credentials -g mlops-RG-umr -n aks-kubeflow
           kubectl port-forward --namespace kubeflow svc/ml-pipeline 8888:8888 &
           kubepid=$!
           
