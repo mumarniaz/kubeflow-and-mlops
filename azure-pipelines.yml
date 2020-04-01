@@ -61,8 +61,6 @@ stages:
   - job: Kubeflow
     steps:
     - task: AzureCLI@1
-      env:
-        KF_MAPPED_SERVICE_PRINCIPAL_PASSWORD: $(KF_SERVICE_PRINCIPAL_PASSWORD)
       inputs:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         scriptLocation: 'inlineScript'
