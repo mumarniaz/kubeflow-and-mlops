@@ -5,6 +5,9 @@ trigger:
 
 pr: none
 
+pool:
+  vmImage: 'ubuntu-latest'
+
 variables:
 - group: devopsforai-aml-vg
 
@@ -13,8 +16,6 @@ stages:
   displayName: 'Configure and Register Containers'
   jobs:
   - job: Containers
-    pool:
-      name: default 
     steps:
     - task: AzureCLI@1
       inputs:
@@ -57,8 +58,6 @@ stages:
   displayName: 'Trigger Kubeflow Pipeline'
   jobs:
   - job: Kubeflow
-    pool:
-      name: default 
     steps:
     - task: AzureCLI@1
       env:
